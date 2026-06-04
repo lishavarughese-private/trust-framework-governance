@@ -4,31 +4,26 @@
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
 │                          PRODUCT REPO (trust-framework)                             │
 │                                                                                     │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  ┌────────────────┐ │
-│  │   .governance/   │  │    spec-kit/     │  │    server/      │  │   ci-reports/  │ │
-│  │  REFERENCE.txt   │  │                  │  │                 │  │                │ │
-│  │                  │  │  BRIEF.md        │  │  app.js         │  │  TASKS-gate-   │ │
-│  │  governance_repo │  │  SPEC.json       │  │  routes/*.js    │  │  report-*.json │ │
-│  │  : URL           │  │  PLAN.json       │  │  models/*.js    │  │                │ │
-│  │  governance_     │  │  TASKS.json      │  │  migrations/*.js│  │  (timestamped  │ │
-│  │  version: v1.0   │  │  IMPL.json       │  │  .env           │  │   audit trail) │ │
-│  │                  │  │  IMPL.md         │  │                 │  │                │ │
-│  └────────┬─────────┘  └────────┬─────────┘  └────────┬────────┘  └────────┬───────┘ │
-│           │                    │                       │                   │         │
-│           │                    │                       │                   │         │
-└───────────┼────────────────────┼───────────────────────┼───────────────────┼─────────┘
-            │                    │                       │                   │
-            │   READ             │   READ                │   READ            │   WRITE
-            ▼                    ▼                       ▼                   
+│  ┌──────────────────────┐  ┌─────────────────┐  ┌────────────────┐                  │
+│  │      spec-kit/       │  │    server/      │  │   ci-reports/  │                  │
+│  │                      │  │                 │  │                │                  │
+│  │  BRIEF.md            │  │  app.js         │  │  TASKS-gate-   │                  │
+│  │  SPEC.json           │  │  routes/*.js    │  │  report-*.json │                  │
+│  │  PLAN.json           │  │  models/*.js    │  │                │                  │
+│  │  TASKS.json          │  │  migrations/*.js│  │  (timestamped  │                  │
+│  │  IMPL.json           │  │  .env           │  │   audit trail) │                  │
+│  │  IMPL.md             │  │                 │  │                │                  │
+│  └────────┬─────────────┘  └────────┬────────┘  └────────┬───────┘                  │
+│           │                       │                   │                            │
+│           │                       │                   │                            │
+└───────────┼───────────────────────┼───────────────────┼────────────────────────────┘
+            │                       │                   │
+            │   READ                │   READ            │   WRITE
+            ▼                       ▼                   ▼
     ┌───────────────────────────────────────────────────────────────────────────────┐
     │                          speckit.js (THE BRIDGE)                               │
     │                                                                                │
-    │  STEP 1: PARSE REFERENCE                                                        │
-    │  parseReference(.governance/REFERENCE.txt)                                      │
-    │    -> extracts: { repo: "github.com/...", version: "v1.0" }                    │
-    │    -> this is metadata for the report (not used to locate files)                │
-    │                                                                                 │
-    │  STEP 2: BUILD CONTEXT                                                          │
+    │  STEP 1: BUILD CONTEXT                                                          │
     │  buildContext(phase) reads from product repo:                                   │
     │                                                                                 │
     │    spec-kit/SPEC.json  ->  ctx.requirements[], ctx.compliance[],               │
@@ -64,7 +59,7 @@
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
 │                        GOVERNANCE REPO (trust-framework-governance)                  │
 │                                                                                     │
-│  STEP 3: EVALUATE PHASE                                                              │
+│  STEP 2: EVALUATE PHASE                                                              │
 │  evaluate-phase.js  (loaded via require() from speckit.js)                            │
 │                                                                                     │
 │  PHASE_FOLDERS maps phase -> gate folders:                                            │
@@ -78,7 +73,7 @@
 │  -> returns array of gate IDs (sorted, deduplicated)                                │
 │                                    |                                                │
 │                                    v                                                │
-│  STEP 4: LOAD GATE MODULES                                                           │
+│  STEP 3: LOAD GATE MODULES                                                           │
 │  gate-evaluator.js  (loaded via require() from evaluate-phase.js)                    │
 │                                                                                     │
 │  loadGates() scans governance/gates/ recursively:                                    │
@@ -111,7 +106,7 @@
 │    ...                                                                               │
 │                                    |                                                │
 │                                    v                                                │
-│  STEP 5: RUN EACH GATE                                                               │
+│  STEP 4: RUN EACH GATE                                                               │
 │  For each gateId in collection:                                                      │
 │                                                                                     │
 │    result = evaluateGate(gateId, ctx)                                                │
@@ -125,7 +120,7 @@
 │    '- returns { gate: "HG-TASK-01", result: "PASS", reason: "..." }                 │
 │                                                                                     │
 │  Example: HG-SEC-01.evaluate(ctx)                                                    │
-│    |- ctx.files[]       -> scan each file's content for 6 secret patterns            │
+│    |- ctx.files[]       -> scan each file content for 6 secret patterns              │
 │    |- Skips comments and process.env references                                      │
 │    '- returns { gate: "HG-SEC-01", result: "PASS"|"FAIL", reason }                  │
 │                                                                                     │
@@ -138,7 +133,7 @@
 │  Gate ERROR -- malformed data, missing fields, etc. -> caught as "ERROR"             │
 │                                    |                                                │
 │                                    v                                                │
-│  STEP 6: AGGREGATE RESULTS                                                           │
+│  STEP 5: AGGREGATE RESULTS                                                           │
 │  evaluate-phase.js builds the manifest:                                              │
 │                                                                                     │
 │  results[] = [                                                                     │
@@ -171,7 +166,7 @@
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
 │                          speckit.js (CONTINUED)                                     │
 │                                                                                    │
-│  STEP 7: SAVE REPORT                                                                │
+│  STEP 6: SAVE REPORT                                                                │
 │  saveReport(phase, manifest)                                                        │
 │                                                                                    │
 │  Writes to product repo:                                                            │
@@ -181,8 +176,8 @@
 │    |- evaluated_at: ISO timestamp                                                   │
 │    |- product: "trust-framework"                                                   │
 │    |- phase: "TASKS"                                                               │
-│    |- governance_repo: URL (from REFERENCE.txt)                                     │
-│    |- governance_version: "v1.0" (from REFERENCE.txt)                              │
+│    |- governance_repo: "local"                                                      │
+│    |- governance_version: "dev"                                                     │
 │    |- transition_allowed: true/false                                               │
 │    |- transition: { from: "TASKS", to: "IMPL" }                                   │
 │    |- summary: { total_gates, passed, failures, warnings }                         │
@@ -191,7 +186,7 @@
 │                                                                                    │
 │  If --out <file> was specified, also copies to that path.                          │
 │                                                                                    │
-│  STEP 8: DECISION                                                                   │
+│  STEP 7: DECISION                                                                   │
 │                                                                                    │
 │  if (manifest.transition_allowed) {                                                │
 │    print "ALL GATES PASSED"                                                        │
@@ -207,27 +202,26 @@
 
 ---
 
-## Summary: All 14 Transactions Between the Two Repos
+## Summary: Transactions Between the Two Repos
 
 | # | Direction | What | File/Function | Triggers When |
 |---|-----------|------|---------------|---------------|
 | **1** | Product -> Product (reads) | Read `spec-kit/SPEC.json` | `readArtifact("SPEC.json")` -> `buildContext()` | Every phase except BRIEF |
-| **2** | Product -> Product (reads) | Read `spec-kit/SPEC.json` | `readArtifact("SPEC.json")` -> `buildContext()` | Every phase except BRIEF |
-| **3** | Product -> Product (reads) | Read `spec-kit/TASKS.json` | `readArtifact("TASKS.json")` -> `buildContext()` | PLAN, TASKS, IMPL phases |
-| **4** | Product -> Product (reads) | Read `spec-kit/PLAN.json` | `readArtifact("PLAN.json")` -> `buildContext()` | PLAN, TASKS, IMPL phases |
-| **5** | Product -> Product (reads) | Read `spec-kit/IMPL.json` | `readArtifact("IMPL.json")` -> `buildContext()` | IMPL phase only |
-| **6** | Product -> Product (reads) | Scan `server/*.js/.ts/.json/.env` | `collectFiles(serverDir)` -> `buildContext()` | All phases |
-| **7** | **Product -> Governance** | `require(evaluate-phase.js)` loads governance code | `var ep = require(GOVERNANCE_EVALUATOR)` | Every `gate` or `watch` call |
-| **8** | **Product -> Governance** | Pass `ctx` object and call `ep.evaluatePhase(phase, ctx)` | `manifest = ep.evaluatePhase(phase, ctx)` | Every gate evaluation |
-| **9** | **Governance -> Product** | Return `manifest` back to speckit.js | `return manifest` from `evaluatePhase()` | After all gate evaluations complete |
-| **10** | **Governance -> Governance** | `gate-evaluator.js` loads gate `.js` files from `gates/` folders | `loadGates()` scans `gates/` recursively | Called by `evaluatePhase()` |
-| **11** | **Governance -> Governance** | Each gate's `evaluate(ctx)` runs against ctx | `gate.evaluate(ctx)` per gate | Called by `evaluateGate()` in a loop |
-| **12** | Product -> Product (writes) | Write report to `ci-reports/` | `saveReport(phase, manifest)` | After every gate evaluation |
-| **13** | Product -> Console (output) | Print results to stdout | `printGateResult()`, `console.log()` | Each gate and summary line |
-| **14** | Product -> Exit Code | `process.exit(0)` or `process.exit(1)` | Decision block in `cmdGate()` | End of gate command |
+| **2** | Product -> Product (reads) | Read `spec-kit/TASKS.json` | `readArtifact("TASKS.json")` -> `buildContext()` | PLAN, TASKS, IMPL phases |
+| **3** | Product -> Product (reads) | Read `spec-kit/PLAN.json` | `readArtifact("PLAN.json")` -> `buildContext()` | PLAN, TASKS, IMPL phases |
+| **4** | Product -> Product (reads) | Read `spec-kit/IMPL.json` | `readArtifact("IMPL.json")` -> `buildContext()` | IMPL phase only |
+| **5** | Product -> Product (reads) | Scan `server/*.js/.ts/.json/.env` | `collectFiles(serverDir)` -> `buildContext()` | All phases |
+| **6** | **Product -> Governance** | `require(evaluate-phase.js)` loads governance code | `var ep = require(GOVERNANCE_EVALUATOR)` | Every `gate` or `watch` call |
+| **7** | **Product -> Governance** | Pass `ctx` object and call `ep.evaluatePhase(phase, ctx)` | `manifest = ep.evaluatePhase(phase, ctx)` | Every gate evaluation |
+| **8** | **Governance -> Product** | Return `manifest` back to speckit.js | `return manifest` from `evaluatePhase()` | After all gate evaluations complete |
+| **9** | **Governance -> Governance** | `gate-evaluator.js` loads gate `.js` files from `gates/` folders | `loadGates()` scans `gates/` recursively | Called by `evaluatePhase()` |
+| **10** | **Governance -> Governance** | Each gate's `evaluate(ctx)` runs against ctx | `gate.evaluate(ctx)` per gate | Called by `evaluateGate()` in a loop |
+| **11** | Product -> Product (writes) | Write report to `ci-reports/` | `saveReport(phase, manifest)` | After every gate evaluation |
+| **12** | Product -> Console (output) | Print results to stdout | `printGateResult()`, `console.log()` | Each gate and summary line |
+| **13** | Product -> Exit Code | `process.exit(0)` or `process.exit(1)` | Decision block in `cmdGate()` | End of gate command |
 
 ---
 
-**Key architectural insight**: The governance repo NEVER reads from the product repo's filesystem. All data flows through `ctx` which is assembled by `speckit.js` before it ever calls the governance evaluator. The governance code is purely functional -- it receives data, runs deterministic checks, returns results. This makes gates testable in isolation and prevents the governance repo from having filesystem coupling to any specific product.
+**Key architectural insight**: The governance repo NEVER reads from the product repo filesystem. All data flows through `ctx` which is assembled by `speckit.js` before it ever calls the governance evaluator. The governance code is purely functional -- it receives data, runs deterministic checks, returns results. This makes gates testable in isolation and prevents the governance repo from having filesystem coupling to any specific product.
 
-**Sycophancy resistance**: Because every gate file's `evaluate(ctx)` is a pure function (same input -> same output), and the `gate-evaluator.js` cache is loaded once and never modified at runtime, no amount of human or agent persuasion during execution can change a gate's result. The only way to change a gate's behavior is to modify the gate's `.js` file in the governance repo and tag a new version.
+**Sycophancy resistance**: Because every gate file `evaluate(ctx)` is a pure function (same input -> same output), and the `gate-evaluator.js` cache is loaded once and never modified at runtime, no amount of human or agent persuasion during execution can change a gate result. The only way to change a gate behavior is to modify the gate `.js` file in the governance repo and tag a new version.

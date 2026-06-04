@@ -1,0 +1,39 @@
+{
+  "gate_id": "HG-TASK-04",
+  "description": "Unit test cases for Full Requirement Coverage gate.",
+  "test_cases": [
+    {
+      "id": "HG-TASK-04-U-001",
+      "description": "PASS — all requirements have mapped tasks",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","maps_to_requirement":"REQ-001"},{"id":"TASK-002","maps_to_requirement":"REQ-002"}],
+        "requirements": [{"id":"REQ-001"},{"id":"REQ-002"}]
+      },
+      "expected": "PASS"
+    },
+    {
+      "id": "HG-TASK-04-U-002",
+      "description": "FAIL — REQ-002 has zero tasks mapped",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","maps_to_requirement":"REQ-001"}],
+        "requirements": [{"id":"REQ-001"},{"id":"REQ-002"}]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-TASK-04-U-003",
+      "description": "PASS — no tasks or no requirements (not triggered)",
+      "inputs": {"tasks": [], "requirements": []},
+      "expected": "PASS"
+    },
+    {
+      "id": "HG-TASK-04-U-004",
+      "description": "FAIL — multiple requirements uncovered",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","maps_to_requirement":"REQ-001"}],
+        "requirements": [{"id":"REQ-001"},{"id":"REQ-002"},{"id":"REQ-003"}]
+      },
+      "expected": "FAIL"
+    }
+  ]
+}

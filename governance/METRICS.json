@@ -1,0 +1,147 @@
+﻿{
+  "_meta": {
+    "artifact": "METRICS",
+    "version": "1.0",
+    "description": "Global metric thresholds for all governed projects. Thresholds are grouped by severity: HARD (blocks merge), SOFT (warns + lead review), GOVERNANCE_BOARD_REVIEW (blocks until board decides), INFORMATIONAL (triggers doc/conf update).",
+    "last_updated": "2026-05-25"
+  },
+  "hard_gates": {
+    "test_coverage_min": 80,
+    "requirement_coverage_min": 100,
+    "orphaned_tasks_max": 0,
+    "gate_receipts_missing_max": 0,
+    "claimed_files_missing_max": 0,
+    "regression_count_max": 0,
+    "hardcoded_secrets_max": 0,
+    "pii_in_logs_max": 0,
+    "bug_to_requirement_mapping_min": 100,
+    "exception_expiry_compliance_min": 100,
+    "false_negative_rate_max": 0,
+    "gate_pass_rate_min": 100,
+    "audit_log_completeness_min": 100,
+    "claimed_vs_actual_file_rate_min": 100,
+    "claimed_vs_actual_test_pass_rate_min": 100,
+    "harmful_output_rate_max": 0,
+    "vulnerability_critical_max": 0,
+    "vulnerability_high_max": 5,
+    "data_exposure_incidents_max": 0,
+    "pii_leakage_rate_max": 0,
+    "inheritance_compliance_rate_min": 100,
+    "gate_configuration_drift_max": 0,
+    "metric_reporting_compliance_min": 100,
+    "gate_to_principle_coverage_min": 100,
+    "test_to_gate_coverage_min": 100
+  },
+  "soft_gates": {
+    "impl_to_test_task_ratio_max": 3.0,
+    "exception_rate_per_phase_max": 2,
+    "requirement_churn_rate_max": 20,
+    "phase_cycle_time_days_max": 5,
+    "false_positive_rate_max": 10,
+    "invented_content_rate_max": 1,
+    "uptime_failure_rate_max": 0.1,
+    "latency_p95_ms_max": 5000,
+    "task_success_rate_min": 99,
+    "gate_evaluation_time_seconds_max": 2,
+    "policy_violation_percentage_max": 1,
+    "time_to_adopt_governance_days_max": 30,
+    "pod_abandonment_rate_max": 10,
+    "human_intervention_rate_max": 20,
+    "phase_completion_without_escalation_min": 80,
+    "mtir_hours_max": 24,
+    "explainable_decision_rate_min": 100,
+    "gate_pass_rate_variance_max": 10,
+    "exception_rate_variance_max": 5,
+    "audit_log_completeness_variance_max": 2
+  },
+  "governance_board_review": {
+    "sycophancy_rate_max": 0,
+    "prompt_injection_success_rate_max": 0,
+    "jailbreak_success_rate_max": 0,
+    "bias_score_max": 0.05,
+    "demographic_parity": "statistically_insignificant_variance"
+  },
+  "informational": {
+    "adversarial_input_miss_rate_max": 5,
+    "action_on_adversarial_miss": "Gate file updated to miss the pattern",
+    "hallucination_rate_max": 2,
+    "action_on_hallucination": "MD file change or AI MCP tool change",
+    "cost_per_violation": "documented_for_trend_analysis",
+    "false_positive_trend": "decreasing_or_stable",
+    "sycophancy_resistance_trend_min": 100,
+    "constitution_amendment_frequency_max_per_year": 4
+  },
+  "pillar_mapping": {
+    "reliability": [
+      "test_coverage_min",
+      "gate_receipts_missing_max",
+      "claimed_files_missing_max",
+      "claimed_vs_actual_file_rate_min",
+      "claimed_vs_actual_test_pass_rate_min",
+      "gate_pass_rate_min",
+      "hallucination_rate_max",
+      "invented_content_rate_max",
+      "false_positive_rate_max",
+      "uptime_failure_rate_max",
+      "latency_p95_ms_max",
+      "task_success_rate_min",
+      "gate_evaluation_time_seconds_max",
+      "test_to_gate_coverage_min",
+      "time_to_adopt_governance_days_max",
+      "pod_abandonment_rate_max",
+      "human_intervention_rate_max",
+      "phase_completion_without_escalation_min",
+      "false_positive_trend",
+      "sycophancy_resistance_trend_min"
+    ],
+    "safety": [
+      "regression_count_max",
+      "sycophancy_rate_max",
+      "harmful_output_rate_max",
+      "sycophancy_resistance_trend_min"
+    ],
+    "security": [
+      "hardcoded_secrets_max",
+      "prompt_injection_success_rate_max",
+      "jailbreak_success_rate_max",
+      "vulnerability_critical_max",
+      "vulnerability_high_max",
+      "policy_violation_percentage_max",
+      "gate_configuration_drift_max",
+      "adversarial_input_miss_rate_max"
+    ],
+    "privacy": [
+      "pii_in_logs_max",
+      "data_exposure_incidents_max",
+      "pii_leakage_rate_max"
+    ],
+    "transparency": [
+      "requirement_coverage_min",
+      "requirement_churn_rate_max",
+      "phase_cycle_time_days_max",
+      "impl_to_test_task_ratio_max",
+      "explainable_decision_rate_min",
+      "cost_per_violation",
+      "constitution_amendment_frequency_max_per_year"
+    ],
+    "accountability": [
+      "orphaned_tasks_max",
+      "bug_to_requirement_mapping_min",
+      "exception_expiry_compliance_min",
+      "exception_rate_per_phase_max",
+      "false_negative_rate_max",
+      "audit_log_completeness_min",
+      "mtir_hours_max",
+      "inheritance_compliance_rate_min",
+      "metric_reporting_compliance_min",
+      "gate_to_principle_coverage_min",
+      "exception_rate_variance_max",
+      "audit_log_completeness_variance_max"
+    ],
+    "fairness": [
+      "bias_score_max",
+      "demographic_parity",
+      "gate_pass_rate_variance_max"
+    ]
+  }
+}

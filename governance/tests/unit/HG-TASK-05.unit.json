@@ -1,0 +1,44 @@
+{
+  "gate_id": "HG-TASK-05",
+  "description": "Unit test cases for Invalid Task Status gate.",
+  "test_cases": [
+    {
+      "id": "HG-TASK-05-U-001",
+      "description": "PASS — all statuses valid",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","status":"todo"},{"id":"TASK-002","status":"in_progress"},{"id":"TASK-003","status":"done"},{"id":"TASK-004","status":"blocked"}]
+      },
+      "expected": "PASS"
+    },
+    {
+      "id": "HG-TASK-05-U-002",
+      "description": "FAIL — invalid status 'pending'",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","status":"pending"}]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-TASK-05-U-003",
+      "description": "FAIL — null status",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","status":null}]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-TASK-05-U-004",
+      "description": "PASS — no tasks (not triggered)",
+      "inputs": {"tasks": []},
+      "expected": "PASS"
+    },
+    {
+      "id": "HG-TASK-05-U-005",
+      "description": "FAIL — one valid, one invalid",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","status":"todo"},{"id":"TASK-002","status":"complete"}]
+      },
+      "expected": "FAIL"
+    }
+  ]
+}

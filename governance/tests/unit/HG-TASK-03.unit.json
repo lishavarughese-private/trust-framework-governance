@@ -1,0 +1,44 @@
+{
+  "gate_id": "HG-TASK-03",
+  "description": "Unit test cases for Missing Dependencies gate.",
+  "test_cases": [
+    {
+      "id": "HG-TASK-03-U-001",
+      "description": "PASS — all dependencies reference valid tasks",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","dependencies":[]},{"id":"TASK-002","dependencies":["TASK-001"]}]
+      },
+      "expected": "PASS"
+    },
+    {
+      "id": "HG-TASK-03-U-002",
+      "description": "FAIL — dependency references non-existent task",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","dependencies":["TASK-999"]}]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-TASK-03-U-003",
+      "description": "PASS — no dependencies at all",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","dependencies":[]},{"id":"TASK-002","dependencies":[]}]
+      },
+      "expected": "PASS"
+    },
+    {
+      "id": "HG-TASK-03-U-004",
+      "description": "FAIL — circular dependency still references existing tasks, this is OK",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","dependencies":["TASK-002"]},{"id":"TASK-002","dependencies":["TASK-001"]}]
+      },
+      "expected": "PASS"
+    },
+    {
+      "id": "HG-TASK-03-U-005",
+      "description": "PASS — no tasks (not triggered)",
+      "inputs": {"tasks": []},
+      "expected": "PASS"
+    }
+  ]
+}

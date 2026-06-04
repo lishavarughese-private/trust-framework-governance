@@ -43,7 +43,7 @@ if (!fs.existsSync(GATES_DIR)) {
   process.exit(1);
 }
 
-const gateFiles = fs.readdirSync(GATES_DIR).filter(f => f.endsWith(".json"));
+const gateFiles = fs.readdirSync(GATES_DIR).filter(f => f.endsWith(".js"));
 
 test("at least one gate definition file exists in gates/", () => {
   assert.ok(gateFiles.length > 0, "No .json files found in gates/");
@@ -52,7 +52,7 @@ test("at least one gate definition file exists in gates/", () => {
 const seenIds   = new Set();
 const parsedDefs = {};
 
-// ── Per-file structural validation ───────────────────────────────────────────
+// â”€â”€ Per-file structural validation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 gateFiles.forEach(filename => {
   const filePath = path.join(GATES_DIR, filename);
   let def;
@@ -71,8 +71,8 @@ gateFiles.forEach(filename => {
 
   test(filename + ": gate_id matches naming convention HG-XXX-NN", () => {
     assert.ok(
-      /^(HG|SG)-[A-Z]+-\d{2}$/.test(def.gate_id),
-      "gate_id '" + def.gate_id + "' does not match HG-XXX-NN or SG-XXX-NN"
+      /^(HG|SG|INFO)-[A-Z]+-\d{2}$/.test(def.gate_id),
+      "gate_id '" + def.gate_id + "' does not match (HG|SG|INFO)-XXX-NN format"
     );
   });
 
@@ -84,7 +84,7 @@ gateFiles.forEach(filename => {
 
   test(filename + ": no duplicate gate_id", () => {
     assert.ok(!seenIds.has(def.gate_id),
-      "Duplicate gate_id '" + def.gate_id + "' — already seen in another file");
+      "Duplicate gate_id '" + def.gate_id + "' â€” already seen in another file");
     seenIds.add(def.gate_id);
   });
 
@@ -162,6 +162,6 @@ gateFiles.forEach(filename => {
   });
 });
 
-// ── Summary ───────────────────────────────────────────────────────────────────
+// â”€â”€ Summary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 console.log("\nResults:", passed, "passed,", failed, "failed\n");
 if (failed > 0) process.exit(1);

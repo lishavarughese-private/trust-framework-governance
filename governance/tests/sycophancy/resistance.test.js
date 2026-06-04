@@ -5,13 +5,13 @@
  * ------------------
  * Structural proof that global gate results are immutable to social pressure.
  *
- * PRINCIPLE UNDER TEST (PRINCIPLE-08):
+ * PRINCIPLE UNDER TEST (PRINCIPLE-02):
  *   Gate results are a pure function of field states.
  *   Social pressure does not change field states.
  *   Therefore social pressure cannot change gate results.
  *
  * HOW IT WORKS:
- *   1. For each gate, a canonical FAIL state is defined — the minimum
+ *   1. For each gate, a canonical FAIL state is defined Ã¢â‚¬â€ the minimum
  *      field-state combination that produces a FAIL result.
  *   2. For each pressure type in pressure-types.json, the gate is
  *      re-evaluated with the IDENTICAL field states.
@@ -34,7 +34,7 @@
 const fs     = require("fs");
 const path   = require("path");
 const assert = require("assert");
-const { evaluateGate } = require("../../test-harness/gate-evaluator");
+const { evaluateGate } = require("../../evaluator/gate-evaluator");
 
 const PRESSURE_TYPES_PATH = path.join(__dirname, "pressure-types.json");
 
@@ -48,7 +48,7 @@ function test(name, fn) {
 
 console.log("\n=== sycophancy/resistance.test.js ===\n");
 
-// ── Load pressure types ───────────────────────────────────────────────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬ Load pressure types Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 test("pressure-types.json exists and is valid JSON", () => {
   assert.ok(fs.existsSync(PRESSURE_TYPES_PATH), "pressure-types.json not found");
   JSON.parse(fs.readFileSync(PRESSURE_TYPES_PATH, "utf8"));
@@ -65,11 +65,11 @@ pressureTypes.forEach(pt => {
   test("Pressure type " + pt.id + " has id, name, and why_it_fails", () => {
     assert.ok(pt.id,           "id missing");
     assert.ok(pt.name,         "name missing");
-    assert.ok(pt.why_it_fails, "why_it_fails missing — every pressure type must explain why it cannot affect the gate");
+    assert.ok(pt.why_it_fails, "why_it_fails missing Ã¢â‚¬â€ every pressure type must explain why it cannot affect the gate");
   });
 });
 
-// ── Canonical FAIL states ─────────────────────────────────────────────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬ Canonical FAIL states Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 // For each gate: the minimum field-state input that produces FAIL.
 // These are the states pressure attempts to overturn.
 
@@ -106,7 +106,7 @@ const CANONICAL_FAIL_STATES = {
   }
 };
 
-// ── Section 1: Verify all canonical states actually produce FAIL ──────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬ Section 1: Verify all canonical states actually produce FAIL Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 console.log("  -- Section 1: Verify canonical FAIL states --\n");
 
 Object.entries(CANONICAL_FAIL_STATES).forEach(([gateId, scenario]) => {
@@ -114,21 +114,21 @@ Object.entries(CANONICAL_FAIL_STATES).forEach(([gateId, scenario]) => {
     const result = evaluateGate(gateId, scenario.inputs);
     assert.strictEqual(result.result, "FAIL",
       gateId + " canonical state should produce FAIL but got " + result.result +
-      " — reason: " + result.reason);
+      " Ã¢â‚¬â€ reason: " + result.reason);
   });
 });
 
-// ── Section 2: Gate results are immutable to all pressure types ───────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬ Section 2: Gate results are immutable to all pressure types Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 console.log("\n  -- Section 2: Gate result immutability under every pressure type --\n");
 
 Object.entries(CANONICAL_FAIL_STATES).forEach(([gateId, scenario]) => {
   pressureTypes.forEach(pt => {
 
     test(
-      gateId + " × " + pt.id + " (" + pt.name + "): result remains FAIL",
+      gateId + " Ãƒâ€” " + pt.id + " (" + pt.name + "): result remains FAIL",
       () => {
         // Pressure is represented as a no-op:
-        // The canonical field states are unchanged — pressure does not
+        // The canonical field states are unchanged Ã¢â‚¬â€ pressure does not
         // modify field states, so the evaluator must return the same result.
         const resultBeforePressure = evaluateGate(gateId, scenario.inputs);
         const resultAfterPressure  = evaluateGate(gateId, scenario.inputs); // identical call
@@ -139,7 +139,7 @@ Object.entries(CANONICAL_FAIL_STATES).forEach(([gateId, scenario]) => {
         assert.strictEqual(resultAfterPressure.result, "FAIL",
           "Post-pressure result changed to " + resultAfterPressure.result +
           " for " + gateId + " under pressure type " + pt.id +
-          " — this must not happen. Pressure: \"" + (pt.canonical_examples[0] || "") + "\"");
+          " Ã¢â‚¬â€ this must not happen. Pressure: \"" + (pt.canonical_examples[0] || "") + "\"");
 
         assert.strictEqual(
           resultBeforePressure.result,
@@ -152,7 +152,7 @@ Object.entries(CANONICAL_FAIL_STATES).forEach(([gateId, scenario]) => {
   });
 });
 
-// ── Section 3: Canonical PASS states are also pressure-immune ────────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬ Section 3: Canonical PASS states are also pressure-immune Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 console.log("\n  -- Section 3: PASS states are also immutable (pressure cannot manufacture a false FAIL) --\n");
 
 const CANONICAL_PASS_STATES = {
@@ -169,7 +169,7 @@ const CANONICAL_PASS_STATES = {
     inputs: {
       payment_card_data_present: true,
       compliance: ["PCI-DSS"],
-      payment_handling_strategy: "Stripe tokenisation — card data never stored"
+      payment_handling_strategy: "Stripe tokenisation Ã¢â‚¬â€ card data never stored"
     }
   },
   "HG-SPEC-03": {
@@ -204,7 +204,7 @@ Object.entries(CANONICAL_PASS_STATES).forEach(([gateId, scenario]) => {
   });
 });
 
-// ── Section 4: Pressure-type catalogue integrity ──────────────────────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬ Section 4: Pressure-type catalogue integrity Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 console.log("\n  -- Section 4: Pressure-type catalogue integrity --\n");
 
 const seenIds   = new Set();
@@ -233,6 +233,6 @@ pressureTypes.forEach(pt => {
   });
 });
 
-// ── Summary ───────────────────────────────────────────────────────────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬ Summary Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 console.log("\nResults:", passed, "passed,", failed, "failed\n");
 if (failed > 0) process.exit(1);

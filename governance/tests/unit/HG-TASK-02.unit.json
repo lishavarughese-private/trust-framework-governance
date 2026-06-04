@@ -1,0 +1,44 @@
+{
+  "gate_id": "HG-TASK-02",
+  "description": "Unit test cases for Missing Acceptance Criteria gate.",
+  "test_cases": [
+    {
+      "id": "HG-TASK-02-U-001",
+      "description": "PASS — all tasks have acceptance criteria",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","acceptance_criteria":["Does X"]},{"id":"TASK-002","acceptance_criteria":["Does Y"]}]
+      },
+      "expected": "PASS"
+    },
+    {
+      "id": "HG-TASK-02-U-002",
+      "description": "FAIL — task has empty acceptance_criteria",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","acceptance_criteria":[]}]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-TASK-02-U-003",
+      "description": "FAIL — task has missing acceptance_criteria",
+      "inputs": {
+        "tasks": [{"id":"TASK-001"}]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-TASK-02-U-004",
+      "description": "PASS — no tasks (not triggered)",
+      "inputs": {"tasks": []},
+      "expected": "PASS"
+    },
+    {
+      "id": "HG-TASK-02-U-005",
+      "description": "FAIL — one task missing, one task has criteria",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","acceptance_criteria":["Does X"]},{"id":"TASK-002","acceptance_criteria":[]}]
+      },
+      "expected": "FAIL"
+    }
+  ]
+}

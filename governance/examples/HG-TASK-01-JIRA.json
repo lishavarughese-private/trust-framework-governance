@@ -1,0 +1,44 @@
+{
+  "_comment": "Example: How a task from TASKS.json maps to a Jira story.",
+  "_meta": {
+    "artifact": "EXAMPLE",
+    "description": "Illustrates the relationship between spec-kit tasks and Jira stories. This is not a working gate -- it is a reference for developers wiring Jira to the governance system."
+  },
+  "example": {
+    "source_task": {
+      "id": "TASK-001",
+      "title": "Implement user registration endpoint",
+      "description": "Create POST /api/register with email, password, and name fields. Validate input, hash password, store user in DB, return JWT token.",
+      "maps_to_requirement": "REQ-001",
+      "acceptance_criteria": [
+        "POST /api/register accepts email, password, name",
+        "Password is hashed with bcrypt before storage",
+        "Duplicate email returns 409 Conflict",
+        "Successful registration returns 201 with JWT token"
+      ],
+      "estimated_effort": "2d",
+      "status": "todo",
+      "dependencies": [],
+      "maps_to_component": "auth-service"
+    },
+    "jira_story": {
+      "issue_type": "Story",
+      "summary": "Implement user registration endpoint",
+      "description": "Create POST /api/register with email, password, and name fields.\n\nAcceptance Criteria:\n- POST /api/register accepts email, password, name\n- Password is hashed with bcrypt before storage\n- Duplicate email returns 409 Conflict\n- Successful registration returns 201 with JWT token",
+      "labels": ["spec-kit", "REQ-001", "auth-service"],
+      "custom_fields": {
+        "governance_task_id": "TASK-001",
+        "governance_requirement": "REQ-001",
+        "estimated_effort": "2d",
+        "maps_to_component": "auth-service"
+      }
+    },
+    "mapping_notes": {
+      "task_id_stored_in": "custom_fields.governance_task_id",
+      "requirement_linked_via": "labels (REQ-001)",
+      "acceptance_criteria": "copied into Jira description as bullet list",
+      "component_mapped_via": "labels (auth-service) and custom_fields.maps_to_component",
+      "status_sync": "Jira status (To Do / In Progress / Done) maps to task status (todo / in_progress / done)"
+    }
+  }
+}   

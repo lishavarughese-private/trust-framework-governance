@@ -1,0 +1,48 @@
+{
+  "gate_id": "HG-TASK-01",
+  "description": "Unit test cases for Tasks Not Mapped to Requirements gate.",
+  "test_cases": [
+    {
+      "id": "HG-TASK-01-U-001",
+      "description": "PASS — all tasks mapped to valid requirements",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","maps_to_requirement":"REQ-001"},{"id":"TASK-002","maps_to_requirement":"REQ-002"}],
+        "requirements": [{"id":"REQ-001"},{"id":"REQ-002"}]
+      },
+      "expected": "PASS"
+    },
+    {
+      "id": "HG-TASK-01-U-002",
+      "description": "FAIL — task has empty maps_to_requirement",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","maps_to_requirement":""}],
+        "requirements": [{"id":"REQ-001"}]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-TASK-01-U-003",
+      "description": "FAIL — task references non-existent requirement",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","maps_to_requirement":"REQ-999"}],
+        "requirements": [{"id":"REQ-001"}]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-TASK-01-U-004",
+      "description": "PASS — no tasks to evaluate (not triggered)",
+      "inputs": {"tasks": [], "requirements": [{"id":"REQ-001"}]},
+      "expected": "PASS"
+    },
+    {
+      "id": "HG-TASK-01-U-005",
+      "description": "FAIL — multiple tasks with empty mappings",
+      "inputs": {
+        "tasks": [{"id":"TASK-001","maps_to_requirement":null},{"id":"TASK-002","maps_to_requirement":"REQ-999"}],
+        "requirements": [{"id":"REQ-001"}]
+      },
+      "expected": "FAIL"
+    }
+  ]
+}

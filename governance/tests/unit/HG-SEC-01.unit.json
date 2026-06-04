@@ -1,0 +1,44 @@
+{
+  "gate_id": "HG-SEC-01",
+  "description": "Unit test cases for Hardcoded Secrets gate.",
+  "test_cases": [
+    {
+      "id": "HG-SEC-01-U-001",
+      "description": "PASS — no files to scan (not triggered)",
+      "inputs": {"files": []},
+      "expected": "PASS"
+    },
+    {
+      "id": "HG-SEC-01-U-002",
+      "description": "PASS — secrets loaded from env vars",
+      "inputs": {
+        "files": [{"path":"server/config.js","content":"const apiKey = process.env.API_KEY;"}]
+      },
+      "expected": "PASS"
+    },
+    {
+      "id": "HG-SEC-01-U-003",
+      "description": "FAIL — Stripe API key hardcoded",
+      "inputs": {
+        "files": [{"path":"server/config.js","content":"const stripeKey = \"sk_test_abc123def456\";"}]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-SEC-01-U-004",
+      "description": "FAIL — password hardcoded",
+      "inputs": {
+        "files": [{"path":"server/db.js","content":"const password = \"supersecret123\";"}]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-SEC-01-U-005",
+      "description": "PASS — commented out secret is skipped",
+      "inputs": {
+        "files": [{"path":"server/config.js","content":"// const apiKey = \"sk_test_abc\";\nconst apiKey = process.env.API_KEY;"}]
+      },
+      "expected": "PASS"
+    }
+  ]
+}

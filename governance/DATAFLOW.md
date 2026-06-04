@@ -211,7 +211,7 @@
 
 | # | Direction | What | File/Function | Triggers When |
 |---|-----------|------|---------------|---------------|
-| **1** | Product -> Product (reads) | Read `.governance/REFERENCE.txt` | `parseReference()` | Every `gate` or `watch` command |
+| **1** | Product -> Product (reads) | Read `spec-kit/SPEC.json` | `readArtifact("SPEC.json")` -> `buildContext()` | Every phase except BRIEF |
 | **2** | Product -> Product (reads) | Read `spec-kit/SPEC.json` | `readArtifact("SPEC.json")` -> `buildContext()` | Every phase except BRIEF |
 | **3** | Product -> Product (reads) | Read `spec-kit/TASKS.json` | `readArtifact("TASKS.json")` -> `buildContext()` | PLAN, TASKS, IMPL phases |
 | **4** | Product -> Product (reads) | Read `spec-kit/PLAN.json` | `readArtifact("PLAN.json")` -> `buildContext()` | PLAN, TASKS, IMPL phases |

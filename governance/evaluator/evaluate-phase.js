@@ -75,6 +75,25 @@ function evaluatePhase(phase, context) {
   const transition = PHASE_TRANSITIONS[phase];
   const transitionAllowed = hardFailures.length === 0;
 
+  // Append source_map locations to failure reasons
+  if (ctx && ctx.source_map) {
+    for (var _gi = 0; _gi < results.length; _gi++) {
+      if (results[_gi].result === "FAIL" && results[_gi].reason) {
+        var _parts = results[_gi].reason.split("; ");
+        for (var _pj = 0; _pj < _parts.length; _pj++) {
+          var _idm = _parts[_pj].match(/([A-Z]+-\d+)/);
+          if (_idm && ctx.source_map[_idm[1]]) {
+            var _loc = ctx.source_map[_idm[1]];
+            if (_parts[_pj].indexOf(_loc) === -1) {
+              _parts[_pj] = _parts[_pj] + " (" + _loc + ")";
+            }
+          }
+        }
+        results[_gi].reason = _parts.join("; ");
+      }
+    }
+  }
+
   return {
     phase: phase,
     evaluated_at: new Date().toISOString(),

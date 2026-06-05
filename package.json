@@ -1,7 +1,7 @@
-﻿{
+{
   "name": "@lishavarughese-private/governance",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
   "description": "Governance evaluator, gates, templates, CLI, and agent system prompt for Spec-Kit",
   "main": "governance/evaluator/gate-evaluator.js",
   "exports": {
@@ -20,5 +20,8 @@
     "governance/DATAFLOW.md"
   ],
   "author": "lishavarughese-private",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
 }

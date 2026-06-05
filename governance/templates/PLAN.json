@@ -1,0 +1,40 @@
+﻿{
+    ""_meta"": {
+        ""artifact"": ""PLAN"",
+        ""version"": ""1.0"",
+        ""status"": ""DRAFT"",
+        ""created"": ""<ISO_DATE>"",
+        ""last_updated"": ""<ISO_DATE>""
+    },
+    ""architecture"": {
+        ""overview"": ""<Architecture overview>"",
+        ""components"": [
+            {
+                ""id"": ""COMP-001"",
+                ""name"": ""<Component name>"",
+                ""responsibility"": ""<What this component does>"",
+                ""type"": ""frontend|backend|database|infrastructure""
+            }
+        ]
+    },
+    ""tech_stack"": [
+        {
+            ""name"": ""<Technology>"",
+            ""version"": ""<version>"",
+            ""purpose"": ""<Why it's used>""
+        }
+    ],
+    ""dependencies"": [],
+    ""api_definitions"": [],
+    ""data_models"": [],
+    ""traceability"": [],
+    ""migration"": {
+        ""has_schema_changes"": false,
+        ""schema_changes"": [],
+        ""migration_scripts"": [],
+        ""rollback_strategy"": ""<Describe rollback procedure>"",
+        ""backward_compatibility"": ""<Describe backward compat>"",
+        ""state_hydration"": ""<How client state is managed>"",
+        ""estimated_downtime"": ""none|<time>""
+    }
+}

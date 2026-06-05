@@ -1,0 +1,26 @@
+﻿{
+    ""_meta"": {
+        ""artifact"": ""SPEC"",
+        ""version"": ""1.0"",
+        ""status"": ""DRAFT"",
+        ""created"": ""<ISO_DATE>"",
+        ""last_updated"": ""<ISO_DATE>""
+    },
+    ""project"": ""<PROJECT_NAME>"",
+    ""problem_statement"": ""<Describe the problem being solved>"",
+    ""requirements"": [
+        {
+            ""id"": ""REQ-001"",
+            ""text"": ""<Requirement description>""
+        }
+    ],
+    ""compliance"": [],
+    ""pii_fields"": [],
+    ""encryption"": null,
+    ""data_retention"": null,
+    ""payment_card_data_present"": false,
+    ""admin_capability_present"": false,
+    ""authentication"": null,
+    ""user_data_stored"": false,
+    ""contradictions"": []
+}

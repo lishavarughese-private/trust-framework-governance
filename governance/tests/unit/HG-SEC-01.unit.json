@@ -1,42 +1,181 @@
 {
   "gate_id": "HG-SEC-01",
-  "description": "Unit test cases for Hardcoded Secrets gate.",
+  "description": "Unit test cases for Hardcoded Secrets & PII gate.",
   "test_cases": [
     {
       "id": "HG-SEC-01-U-001",
-      "description": "PASS — no files to scan (not triggered)",
-      "inputs": {"files": []},
+      "description": "PASS - no files to scan (not triggered)",
+      "inputs": {
+        "files": []
+      },
       "expected": "PASS"
     },
     {
       "id": "HG-SEC-01-U-002",
-      "description": "PASS — secrets loaded from env vars",
+      "description": "PASS - secrets loaded from env vars",
       "inputs": {
-        "files": [{"path":"server/config.js","content":"const apiKey = process.env.API_KEY;"}]
+        "files": [
+          {
+            "path": "server/config.js",
+            "content": "const apiKey = process.env.API_KEY;"
+          }
+        ]
       },
       "expected": "PASS"
     },
     {
       "id": "HG-SEC-01-U-003",
-      "description": "FAIL — Stripe API key hardcoded",
+      "description": "FAIL - Stripe API key hardcoded",
       "inputs": {
-        "files": [{"path":"server/config.js","content":"const stripeKey = \"sk_test_abc123def456\";"}]
+        "files": [
+          {
+            "path": "server/config.js",
+            "content": "const stripeKey = \"sk_test_abc123def456\";"
+          }
+        ]
       },
       "expected": "FAIL"
     },
     {
       "id": "HG-SEC-01-U-004",
-      "description": "FAIL — password hardcoded",
+      "description": "FAIL - password hardcoded",
       "inputs": {
-        "files": [{"path":"server/db.js","content":"const password = \"supersecret123\";"}]
+        "files": [
+          {
+            "path": "server/db.js",
+            "content": "const password = \"supersecret123\";"
+          }
+        ]
       },
       "expected": "FAIL"
     },
     {
       "id": "HG-SEC-01-U-005",
-      "description": "PASS — commented out secret is skipped",
+      "description": "FAIL - commented out secret is now caught",
       "inputs": {
-        "files": [{"path":"server/config.js","content":"// const apiKey = \"sk_test_abc\";\nconst apiKey = process.env.API_KEY;"}]
+        "files": [
+          {
+            "path": "server/config.js",
+            "content": "// const apiKey = \"sk_test_abc\";"
+          }
+        ]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-SEC-01-U-006",
+      "description": "FAIL - generic api_key variable assignment",
+      "inputs": {
+        "files": [
+          {
+            "path": "server/routes/cars.js",
+            "content": "var api_key = \"sk_abc-178978_687687\";"
+          }
+        ]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-SEC-01-U-007",
+      "description": "FAIL - Slack token hardcoded",
+      "inputs": {
+        "files": [
+          {
+            "path": "server/slack.js",
+            "content": "const token = \"xoxb-1234567890-abcdefghij\";"
+          }
+        ]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-SEC-01-U-008",
+      "description": "FAIL - Google API key hardcoded",
+      "inputs": {
+        "files": [
+          {
+            "path": "server/google.js",
+            "content": "const googleKey = \"AIzaSyABC123DEF456GHI789JKL012MNO345PQR678\";"
+          }
+        ]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-SEC-01-U-009",
+      "description": "FAIL - JWT token hardcoded",
+      "inputs": {
+        "files": [
+          {
+            "path": "server/auth.js",
+            "content": "const token = \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.abc123\";"
+          }
+        ]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-SEC-01-U-010",
+      "description": "FAIL - AWS Access Key ID hardcoded",
+      "inputs": {
+        "files": [
+          {
+            "path": "server/aws.js",
+            "content": "const key = \"AKIAIOSFODNN7EXAMPLE\";"
+          }
+        ]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-SEC-01-U-011",
+      "description": "FAIL - email address in source code",
+      "inputs": {
+        "files": [
+          {
+            "path": "server/notify.js",
+            "content": "const email = \"user@company.com\";"
+          }
+        ]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-SEC-01-U-012",
+      "description": "FAIL - SSN in source code",
+      "inputs": {
+        "files": [
+          {
+            "path": "server/hr.js",
+            "content": "const ssn = \"123-45-6789\";"
+          }
+        ]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-SEC-01-U-013",
+      "description": "FAIL - SSH private key in source",
+      "inputs": {
+        "files": [
+          {
+            "path": "server/deploy.js",
+            "content": "-----BEGIN RSA PRIVATE KEY-----"
+          }
+        ]
+      },
+      "expected": "FAIL"
+    },
+    {
+      "id": "HG-SEC-01-U-014",
+      "description": "PASS - credit reference number (not real PII)",
+      "inputs": {
+        "files": [
+          {
+            "path": "server/order.js",
+            "content": "const ref = \"ORD-1234567890\";"
+          }
+        ]
       },
       "expected": "PASS"
     }

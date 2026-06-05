@@ -1,0 +1,40 @@
+﻿{
+    ""_meta"": {
+        ""artifact"": ""IMPL"",
+        ""phase"": ""IMPL"",
+        ""version"": ""1.0"",
+        ""status"": ""DRAFT"",
+        ""created"": ""<ISO_DATE>"",
+        ""last_updated"": ""<ISO_DATE>""
+    },
+    ""test_results"": [
+        {
+            ""test_suite"": ""<Test suite name>"",
+            ""passed"": 0,
+            ""failed"": 0,
+            ""skipped"": 0,
+            ""duration_ms"": 0,
+            ""result"": ""pass|fail""
+        }
+    ],
+    ""console_errors"": {
+        ""count"": 0,
+        ""details"": []
+    },
+    ""security_violations"": [],
+    ""requirement_coverage"": [
+        {
+            ""requirement_id"": ""REQ-XXX"",
+            ""status"": ""covered|partial|missing"",
+            ""evidence"": ""<How it's covered>""
+        }
+    ],
+    ""task_notes"": {},
+    ""deployment_checklist"": [
+        {
+            ""item"": ""<Checklist item>"",
+            ""status"": ""done|pending|n/a"",
+            ""notes"": """"
+        }
+    ]
+}

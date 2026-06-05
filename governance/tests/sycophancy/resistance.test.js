@@ -102,7 +102,11 @@ const CANONICAL_FAIL_STATES = {
   },
   "HG-SPEC-06": {
     label:  "problem_statement is null",
-    inputs: { problem_statement: null }
+    inputs: { problem_statement: null },
+  "HG-SEC-01": {
+    label:  "Generic API key assignment with string literal",
+    inputs: { files: [{ path: "server/config.js", content: "var api_key = \"abc123def456\";" }] }
+  }
   }
 };
 
@@ -186,7 +190,11 @@ const CANONICAL_PASS_STATES = {
   },
   "HG-SPEC-06": {
     label:  "Well-formed problem statement",
-    inputs: { problem_statement: "Users cannot complete checkout without repeated failed payment attempts." }
+    inputs: { problem_statement: "Users cannot complete checkout without repeated failed payment attempts." },
+  "HG-SEC-01": {
+    label:  "No files to scan (not triggered)",
+    inputs: { files: [] }
+  }
   }
 };
 

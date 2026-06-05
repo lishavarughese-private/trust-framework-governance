@@ -3,97 +3,76 @@
  * Phase: ALL (COMMON)
  * Type: HARD
  *
- * Scans source files for hardcoded secrets and credentials.
+ * Scans source files for hardcoded secrets, credentials, and PII.
  *
  * Pass when:
- *   All scanned files are free of hardcoded API keys, passwords, connection strings with credentials, or tokens.
+ *   All scanned files are free of hardcoded API keys, passwords, tokens,
+ *   connection strings with credentials, and PII (emails, SSNs, card numbers).
  *
  * Fail if:
- *   Any of the following patterns are found in source files: Stripe API keys (sk_live_/sk_test_), AWS Access Key IDs (AKIA...), GitHub personal access tokens (ghp_), password/secret variable assignments with literal values, or connection strings containing credentials.
+ *   Any of the following patterns are found in source files.
  *
- * Example output:
- *   [PASS] HG-SEC-01 -- <pass message>
- *   [FAIL] HG-SEC-01 -- <failure details>
+ *   NOTE: Comments are NOT skipped. Commented-out secrets still represent
+ *   a governance gap and are flagged as findings.
  */
 
 "use strict";
 
 const gate_id = "HG-SEC-01";
-const name = "Hardcoded Secrets Gate";
+const name = "Hardcoded Secrets & PII Gate";
 const severity = "HARD";
 const constitution_principle = "PRINCIPLE-03";
 
-/**
- * Patterns to detect hardcoded credentials in source files.
- * These match known API key formats and literal password/secret assignments.
- * NOTE: This is a static scan -- it checks for suspicious patterns, not runtime secrets.
- */
 const SECRET_PATTERNS = [
-  { name: "Stripe API key",                regex: /sk_live_|sk_test_/ },
-  { name: "AWS Access Key ID",             regex: /AKIA[0-9A-Z]{16}/ },
-  { name: "GitHub personal access token",  regex: /ghp_[A-Za-z0-9]{36}/ },
-  { name: "Generic password assignment",   regex: /(?:password|pwd)\s*[:=]\s*["'"'"'][^"'"'"]{3,}["'"'"']/i },
-  { name: "Generic secret assignment",     regex: /(?:secret|SECRET)\s*[:=]\s*["'"'"'][^"'"'"]{3,}["'"'"']/ },
+  { name: "Stripe API key",                regex: /sk_live_|sk_test_|rk_live_|rk_test_|whsec_/ },
+  { name: "AWS Access Key ID",             regex: /(?:AKIA|ASIA)[0-9A-Z]{16}/ },
+  { name: "GitHub token",                  regex: /ghp_|gho_|ghu_|ghs_|ghr_[A-Za-z0-9]{36}/ },
+  { name: "Slack token",                   regex: /xox[bpras]-[A-Za-z0-9\-]+/ },
+  { name: "Google API key",                regex: /AIza[0-9A-Za-z\-_]{35}/ },
+  { name: "Twilio API key",                regex: /SK[0-9a-fA-F]{32}/ },
+  { name: "JWT token",                     regex: /eyJ[A-Za-z0-9\-_]+\.eyJ[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+/ },
+  { name: "SSH private key",              regex: /-----BEGIN (?:RSA|DSA|EC|OPENSSH) PRIVATE KEY-----/ },
+  { name: "Generic key/token assignment",  regex: /(?:api_?key|api_?secret|access_?key|access_?token|auth_?token|bearer|token|credential)s?\s*[:=]\s*["\'][^"\']{8,}["\']/i },
+  { name: "Generic password assignment",   regex: /(?:password|pwd|passwd)\s*[:=]\s*["\'][^"\']{3,}["\']/i },
+  { name: "Generic secret assignment",     regex: /(?:secret|SECRET)\s*[:=]\s*["\'][^"\']{3,}["\']/ },
   { name: "Connection string with credentials", regex: /:\/\/[^:]+:[^@]+@/ },
+  { name: "Email address",                 regex: /[a-zA-Z0-9._%+-]+@(?!(?:example\.(?:com|org|net)))[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i },
+  { name: "Social Security Number",        regex: /\b\d{3}-\d{2}-\d{4}\b/ },
+  { name: "Credit card (Visa/MC/Discover 16-digit)", regex: /(?:^|[^0-9a-fA-F-])(?:4[0-9]{3}|5[1-5][0-9]{2}|6011)(?:[\s-]?[0-9]{4}){3}(?:$|[^0-9a-fA-F-])/ },
+  { name: "Credit card (Amex 15-digit)",        regex: /(?:^|[^0-9a-fA-F-])3[47][0-9]{2}[\s-]?[0-9]{6}[\s-]?[0-9]{5}(?:$|[^0-9a-fA-F-])/ },
+  { name: "Suspicious key-like literal",   regex: /["\'][A-Za-z0-9_\-]{20,}["\']\s*[;)]?\s*$/ },
 ];
 
-/**
- * Line must be skipped if it is:
- * - A comment line (//, #, /*)
- * - An environment variable reference (process.env)
- *
- * NOTE: We only skip the full line, not inline comments like `// password = "x" // TODO: move to env`
- * Those still fire because the first portion of the line matches before the inline comment.
- */
 function isIgnoredLine(line) {
-  var trimmed = line.trim();
-  // Skip single-line comments and hashbang-style comments
-  if (trimmed.startsWith("//") || trimmed.startsWith("#")) return true;
-  // Skip the opening of block comments (conservative -- only if it starts at line beginning)
-  if (trimmed.startsWith("/*")) return true;
-  // Skip lines that only reference environment variables (not assignments)
-  // e.g. process.env.PASSWORD is fine, but password = "value" is not
   if (line.includes("process.env")) return true;
   return false;
 }
 
 function evaluate(ctx) {
-  // === HG-SEC-01 evaluator ===
-  // Reads context fields and returns PASS or FAIL with a reason string.
   const files = ctx.files || [];
-
-  // If no files were scanned (e.g. server/ dir doesn't exist), gate is not triggered
   if (files.length === 0) {
-    return pass("Gate not triggered -- no files to scan");
+    return pass("Gate not triggered - no files to scan");
   }
-
   const findings = [];
-
-  // Scan each file line by line
   for (const file of files) {
     const content = file.content || "";
     const lines = content.split("\n");
-
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-
-      // Skip comments and env references (false positive reduction)
       if (isIgnoredLine(line)) continue;
-
-      // Check all secret patterns against this line
       for (const pattern of SECRET_PATTERNS) {
         if (pattern.regex.test(line)) {
           findings.push(
-            pattern.name + " found in " + file.path + " line " + (i + 1) + ": \"" +
-            line.trim().substring(0, 80) + "\""
+            pattern.name + " found in " + file.path + " line " + (i + 1) + ': "' +
+            line.trim().substring(0, 80) + '"'
           );
+          break;
         }
       }
     }
   }
-
   if (findings.length === 0) {
-    return pass("No hardcoded secrets found in scanned files");
+    return pass("No hardcoded secrets or PII found in scanned files");
   }
   return fail(findings.join("\n"));
 }

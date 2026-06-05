@@ -1,0 +1,26 @@
+﻿{
+    ""_meta"": {
+        ""artifact"": ""TASKS"",
+        ""phase"": ""TASKS"",
+        ""version"": ""1.0"",
+        ""status"": ""DRAFT"",
+        ""created"": ""<ISO_DATE>"",
+        ""last_updated"": ""<ISO_DATE>""
+    },
+    ""tasks"": [
+        {
+            ""id"": ""TASK-001"",
+            ""title"": ""<Task title>"",
+            ""description"": ""<Detailed description>"",
+            ""status"": ""todo|in_progress|done"",
+            ""priority"": ""low|medium|high"",
+            ""maps_to_requirement"": ""REQ-XXX"",
+            ""maps_to_component"": ""COMP-XXX"",
+            ""acceptance_criteria"": [
+                ""<Criterion 1>""
+            ],
+            ""dependencies"": [],
+            ""estimated_effort"": ""<Xd>""
+        }
+    ]
+}

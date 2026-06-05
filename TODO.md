@@ -1,21 +1,84 @@
-# Spec-Kit To-Do
+﻿# Outstanding Work
 
 Items to pick up in future sessions, ordered roughly by priority.
 
 ---
 
-1. **`speckit init` command** -- auto-creates .governance/REFERENCE.txt and pulls governance rules. CLI should prompt for repo URL and version.
+## 1. Governance Repo Hosts Canonical Artifact Templates
 
-2. **Sycophancy resistance for new gates** -- add HG-TASK-01..05, SG-TASK-01..04, HG-SEC-01, INFO-TRACE-01 to resistance.test.js
+The governance repo should define canonical JSON schemas/templates for each phase artifact. Product repos reference these as the contract — gates depend on specific field names and structures.
 
-3. **Unit tests for new gate functions** -- verify run-unit-tests.js actually runs the new .unit.json fixtures
+**Contents (in governance repo):**
+`
+governance/
+  templates/
+    SPEC.json           # Canonical template with all expected fields
+    PLAN.json           # Architecture, components, APIs, data models
+    TASKS.json          # Tasks with acceptance criteria, dependencies
+    IMPL.json           # Test results, console errors, deployment checklist
+`
 
-4. **Artifact schema definitions** -- define canonical JSON schemas for SPEC.json, PLAN.json, TASKS.json, IMPL.json in the governance repo. Gates depend on specific field names and structures. Schemas serve as the contract between governance and product repos.
+**How it works:**
+- Product repos copy templates into spec-kit/ at init time (via speckit init)
+- Or the agent hook (/speckit.specify, /speckit.plan, etc.) generates artifacts matching these schemas
+- Gates validate field presence and structure — template mismatch means gate failure
 
-5. **PLAN SOFT gate SG-PLAN-01** -- "Secrets Manager" component not in traceability. Add traceability entry or acknowledge as expected.
+**Open questions:**
+- Validate via JSON Schema ($schema in each artifact) or via gate logic?
+- Should speckit init copy templates or should agent hooks always regenerate them?
 
-7. **Update old tests** -- integrity.test.js and coverage.test.js still look for .json gate files. Update to check .js files or remove.
+---
 
-8. **npm package publish** -- make speckit installable so speckit gate TASKS works globally.
+## 2. Production Governance Resolution
 
-9. **Dynamic governance path** -- replace hardcoded path in speckit.js with resolution from REFERENCE.txt.
+The current speckit.js has a hardcoded local path:
+
+`js
+var GOVERNANCE_REPO_PATH = ""C:\Users\ashwi\trust-framework-governance"";
+`
+
+This is a development shortcut. For production:
+
+**Option A: npm package (@speckit/governance) [RECOMMENDED]**
+- Publish the governance evaluator as an npm package (e.g. @speckit/governance)
+- Product repo installs as dev dependency: 
+pm install @speckit/governance
+- speckit.js resolves via 
+equire("@speckit/governance") — no filesystem coupling
+- Versioning via semver in package.json
+- CI/CD: just 
+pm install, no cloning needed
+- Updates: bump version in package.json, reinstall
+
+**Option B: Git clone at build time**
+- CI/CD clones the governance repo at a pinned tag before running speckit.js
+- Works without npm publishing but adds clone step
+- Heavy for local dev (every speckit gate would need a fetch)
+
+---
+
+## 3. CI Pipeline Integration
+
+Existing speckit-ci.yml runs its own hardcoded CI checks, not the governance evaluator.
+The CI should:
+- Fetch/clone governance repo (or resolve from npm package)
+- Run speckit gate <phase> at phase transitions
+- Store results in ci-reports/
+- Block merge if HARD gates fail
+
+---
+
+## 4. npm Package Publish for speckit CLI
+
+Currently invoked as 
+ode scripts/speckit.js gate TASKS.
+Should be speckit gate TASKS via npm packaging with a bin entry in package.json.
+
+---
+
+## 5. Dynamic Governance Path
+
+Replace hardcoded path in speckit.js with resolution from .governance/REFERENCE.txt or from 
+ode_modules/@speckit/governance.
+
+---

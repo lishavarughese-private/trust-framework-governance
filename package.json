@@ -1,28 +1,54 @@
 {
 
-    "name":  "@lishavarughese-private/governance",
-    "version":  "1.0.3",
-    "private":  false,
-    "description":  "Governance evaluator, gates, templates, CLI, and agent system prompt for Spec-Kit",
-    "main":  "governance/evaluator/gate-evaluator.js",
-    "exports":  {
-                    "./evaluate-phase":  "./governance/evaluator/evaluate-phase.js",
-                    "./gate-evaluator":  "./governance/evaluator/gate-evaluator.js",
-                    "./agent/SYSTEM_PROMPT.md":  "./governance/agent/SYSTEM_PROMPT.md",
-                    "./templates/*":  "./governance/templates/*"
-                },
-    "files":  [
-                  "governance/evaluator/",
-                  "governance/gates/",
-                  "governance/templates/",
-                  "governance/agent/",
-                  "governance/scripts/speckit.js",
-                  "governance/CONSTITUTION.md",
-                  "governance/DATAFLOW.md"
-              ],
-    "author":  "lishavarughese-private",
-    "license":  "UNLICENSED",
-    "publishConfig":  {
-                          "registry":  "https://npm.pkg.github.com"
-                      }
+    "name": "@lishavarughese-private/governance",
+
+    "version": "1.0.4",
+
+    "private": false,
+
+    "description": "Governance evaluator, gates, templates, CLI, and agent system prompt for Spec-Kit",
+
+    "main": "governance/evaluator/gate-evaluator.js",
+
+    "exports": {
+
+        "./evaluate-phase": "./governance/evaluator/evaluate-phase.js",
+
+        "./gate-evaluator": "./governance/evaluator/gate-evaluator.js",
+
+        "./agent/SYSTEM_PROMPT.md": "./governance/agent/SYSTEM_PROMPT.md",
+
+        "./templates/*": "./governance/templates/*"
+
+    },
+
+    "files": [
+
+        "governance/evaluator/",
+
+        "governance/gates/",
+
+        "governance/templates/",
+
+        "governance/agent/",
+
+        "governance/scripts/speckit.js",
+
+        "governance/CONSTITUTION.md",
+
+        "governance/DATAFLOW.md"
+
+    ],
+
+    "author": "lishavarughese-private",
+
+    "license": "UNLICENSED",
+
+    "publishConfig": {
+
+        "registry": "https://npm.pkg.github.com"
+
+    }
+
 }
+

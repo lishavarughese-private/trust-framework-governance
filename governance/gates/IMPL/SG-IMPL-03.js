@@ -30,9 +30,9 @@ function evaluate(ctx) {
   var impl = ctx.impl || {};
   var taskNotes = impl.task_notes || {};
 
-  var complexTasks = tasks.filter(function(t) {
+  var complexTasks = tasks.filter(function(t) { if (!t) return false;
     var desc = ((t.description || "") + " " + (t.title || "")).toLowerCase();
-    return /algorithm|crypt|encrypt|decrypt|hash|kms|auth|token|oauth|jwt|sign|verify|permission|acl|regex|parse|transform|validat/i.test(desc);
+    return /algorithm|crypt|encrypt|decrypt|hash|kms|auth|token|oauth|jwt|sign|verify|permission|acl|regex|parse|transform/i.test(desc);
   });
 
   var warnings = [];

@@ -125,3 +125,4 @@ function transitionBlocked(manifest) {
 }
 
 module.exports = { evaluatePhase, loadResults, transitionBlocked, PHASE_FOLDERS, PHASE_TRANSITIONS };
+

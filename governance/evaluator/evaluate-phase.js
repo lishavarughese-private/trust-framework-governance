@@ -26,7 +26,7 @@ const PHASE_FOLDERS = {
   BRIEF: [],  // no gates for BRIEF phase
   SPEC:  ["SPEC", "COMMON"],
   PLAN:  ["PLAN", "SPEC", "COMMON"],   // PLAN has its own gates + SPEC compliance checks + COMMON
-  TASKS: ["TASKS", "COMMON"],
+  TASKS: ["TASKS", "PLAN", "COMMON"],
   IMPL:  ["IMPL", "TASKS", "COMMON"],  // IMPL has its own gates + TASKS checks + COMMON
 };
 

@@ -1,6 +1,6 @@
 {
     "name":  "@lishavarughese-private/governance",
-    "version":  "1.0.13",
+    "version":  "1.0.14",
     "private":  false,
     "description":  "Governance evaluator, gates, templates, CLI, and agent system prompt for Spec-Kit",
     "main":  "governance/evaluator/gate-evaluator.js",

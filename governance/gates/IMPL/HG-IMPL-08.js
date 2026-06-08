@@ -28,44 +28,57 @@ function evaluate(ctx) {
     return pass("No tasks to evaluate.");
   }
 
-  var testSuites = [];
-  for (var t = 0; t < testResults.length; t++) {
-    testSuites.push((testResults[t].test_suite || "").toLowerCase());
+  // Build map of which tasks have paired test tasks
+  var testTaskFor = {};
+  var pairedTestIds = {};
+  for (var ti = 0; ti < tasks.length; ti++) {
+    var t = tasks[ti];
+    var title = (t.title || "").toLowerCase();
+    var type = (t.type || "").toLowerCase();
+    if (type === "test" || title.indexOf("test ") === 0 || title.indexOf("test for") !== -1) {
+      var target = t.maps_to_task || null;
+      var titleMatch = title.match(/test for (task-\d+)/);
+      if (!target && titleMatch) {
+        target = titleMatch[1].toUpperCase();
+      }
+      if (target) {
+        testTaskFor[target] = t.id;
+        pairedTestIds[t.id] = true;
+      }
+    }
   }
 
+  // Only check tasks that have paired test tasks
   var untestedTasks = [];
   for (var i = 0; i < tasks.length; i++) {
     var task = tasks[i];
+    var taskId = (task.id || "").toLowerCase();
+
+    // Skip test tasks themselves
+    if (pairedTestIds[task.id]) continue;
+
     var ac = task.acceptance_criteria;
     if (!ac || !Array.isArray(ac) || ac.length === 0) {
       continue;
     }
 
-    var taskId = (task.id || "").toLowerCase();
+    // Check if this task has a paired test
+    var pairedTest = testTaskFor[task.id];
+    if (!pairedTest) continue;
+
+    // Check if the paired test has a matching test result
+    var pairedId = pairedTest.toLowerCase();
     var matched = false;
-    for (var s = 0; s < testSuites.length; s++) {
-      if (testSuites[s].indexOf(taskId) !== -1) {
+    for (var s = 0; s < testResults.length; s++) {
+      var suiteName = (testResults[s].test_suite || "").toLowerCase();
+      if (suiteName.indexOf(pairedId) !== -1) {
         matched = true;
         break;
       }
     }
 
-    if (!matched && testResults.length > 0) {
-      for (var a = 0; a < ac.length; a++) {
-        var criterion = (ac[a] || "").toLowerCase().substring(0, 30);
-        for (var s2 = 0; s2 < testResults.length; s2++) {
-          var notes = (testResults[s2].notes || "").toLowerCase();
-          if (notes.indexOf(criterion) !== -1) {
-            matched = true;
-            break;
-          }
-        }
-        if (matched) break;
-      }
-    }
-
     if (!matched) {
-      untestedTasks.push(task.id || "task-" + i);
+      untestedTasks.push(task.id + " (paired test " + pairedTest + " has no matching test result)");
     }
   }
 
